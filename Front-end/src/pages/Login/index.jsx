@@ -1,12 +1,19 @@
 import axios from "axios";
-import { useState } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { Context } from "../../context";
 
 function Login() {
+	const { setUserToken, baseURL, isConnected, setIsConnected } = useContext(Context);
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
 	let navigate = useNavigate();
-	const baseURL = "http://localhost:3001/api/v1";
+
+	useEffect(() => {
+		if (isConnected) {
+			navigate("/profile", { replace: true });
+		}
+	}, [isConnected, setIsConnected, navigate]);
 
 	const login = (email, password) => {
 		axios
@@ -15,11 +22,12 @@ function Login() {
 				password: password,
 			})
 			.then((response) => {
-				console.log(response.data.body.token);
-				navigate("/profile", { replace: true });
+				setUserToken(response.data.body.token);
+				setIsConnected(true);
 			})
 			.catch((error) => {
 				console.log(error);
+				setIsConnected(false);
 			});
 	};
 

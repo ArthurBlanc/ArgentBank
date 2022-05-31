@@ -1,11 +1,48 @@
+import axios from "axios";
+import { useContext, useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { Context } from "../../context";
+
 function Profile() {
+	const { userToken, baseURL, isConnected } = useContext(Context);
+	const [userFirstname, setUserFirstname] = useState(null);
+	const [userLastname, setUserLastname] = useState(null);
+	let navigate = useNavigate();
+
+	useEffect(() => {
+		if (!isConnected) {
+			navigate("/login", { replace: true });
+		}
+
+		const user = (token) => {
+			axios({
+				method: "POST",
+				url: baseURL + "/user/profile",
+				headers: { Authorization: `Bearer ${token}` },
+			})
+				.then((response) => {
+					setUserFirstname(response.data.body.firstName);
+					setUserLastname(response.data.body.lastName);
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		};
+
+		user(userToken);
+	}, [userToken, baseURL, isConnected, navigate]);
+
+	if (!userFirstname) {
+		return null;
+	}
+
 	return (
 		<main className="main bg-dark">
 			<div className="header">
 				<h1>
 					Welcome back
 					<br />
-					Tony Jarvis!
+					{userFirstname} {userLastname}!
 				</h1>
 				<button className="edit-button">Edit Name</button>
 			</div>
