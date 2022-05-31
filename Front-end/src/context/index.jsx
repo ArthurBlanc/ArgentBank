@@ -6,6 +6,7 @@ export const Provider = ({ children }) => {
 	const [userToken, setUserToken] = useState(null);
 	const [baseURL, setBaseURL] = useState("http://localhost:3001/api/v1");
 	const [isConnected, setIsConnected] = useState(false);
+	const [userData, setUserData] = useState(null);
 
 	return (
 		<Context.Provider
@@ -16,6 +17,8 @@ export const Provider = ({ children }) => {
 				setBaseURL,
 				isConnected,
 				setIsConnected,
+				userData,
+				setUserData,
 			}}
 		>
 			{children}

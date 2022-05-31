@@ -1,0 +1,42 @@
+[
+	{
+		"userId": "62948ea8dd79d3bdfc0ae05d",
+		"account": [
+			{
+				"title": "Argent Bank Checking (x8349)",
+				"amount": 2082.79,
+				"description": "Available Balance"
+			},
+			{
+				"title": "Argent Bank Savings (x6712)",
+				"amount": 10928.42,
+				"description": "Available Balance"
+			},
+			{
+				"title": "Argent Bank Credit Card (x8349)",
+				"amount": 184.3,
+				"description": "Current Balance"
+			}
+		]
+	},
+	{
+		"userId": "62948ea8dd79d3bdfc0ae05f",
+		"account": [
+			{
+				"title": "Argent Bank Checking (x1242)",
+				"amount": 1570.79,
+				"description": "Available Balance"
+			},
+			{
+				"title": "Argent Bank Savings (x4548)",
+				"amount": 8120.51,
+				"description": "Available Balance"
+			},
+			{
+				"title": "Argent Bank Credit Card (x1242)",
+				"amount": 104.24,
+				"description": "Current Balance"
+			}
+		]
+	}
+]

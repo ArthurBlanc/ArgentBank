@@ -5,10 +5,11 @@ import { Context } from "../../context";
 import logo from "../../assets/argentBankLogo.png";
 
 function Header() {
-	const { isConnected, setIsConnected } = useContext(Context);
+	const { isConnected, setIsConnected, userData, setUserData } = useContext(Context);
 
 	const signOut = () => {
 		setIsConnected(false);
+		setUserData(null);
 	};
 
 	return (
@@ -28,7 +29,8 @@ function Header() {
 				{isConnected && (
 					<NavLink className="main-nav-item" to="/profile">
 						<i className="fa fa-user-circle"></i>
-						Tony
+						{!userData && "Profile"}
+						{userData && userData.firstName}
 					</NavLink>
 				)}
 				{isConnected && (
