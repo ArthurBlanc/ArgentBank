@@ -1,0 +1,26 @@
+.new-name-form {
+	width: 40%;
+	margin: auto;
+}
+
+.new-name-form .input-group {
+	display: -webkit-box;
+	display: -ms-flexbox;
+	display: flex;
+	margin: 0 auto;
+	-webkit-column-gap: 0.5rem;
+	-moz-column-gap: 0.5rem;
+	column-gap: 0.5rem;
+}
+
+.new-name-form .input-group:last-child {
+	width: 10rem;
+}
+
+.input-group .input-wrapper {
+	width: 50%;
+}
+
+.input-group .edit-button {
+	width: 5rem;
+}

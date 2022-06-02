@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Context } from "../../context";
 
@@ -7,34 +7,74 @@ import AccountCard from "../../components/AccountCard";
 
 import { useFetch } from "../../utils/useFetch";
 
+import "./styles.css";
+
 function Profile() {
 	const { userToken, baseURL, isConnected, userData, setUserData } = useContext(Context);
+	const [newFirstName, setNewFirstName] = useState(null);
+	const [newLastName, setNewLastName] = useState(null);
+	const [showEditNameForm, setShowEditNameForm] = useState(false);
 
 	let navigate = useNavigate();
 
 	const account = useFetch(window.location.origin + "/account-data.json");
+
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+		newName(newFirstName, newLastName);
+		user(userToken);
+		setShowEditNameForm(false);
+	};
+
+	const toggleEditNameForm = () => {
+		if (showEditNameForm) {
+			setShowEditNameForm(false);
+		} else {
+			setShowEditNameForm(true);
+		}
+	};
+
+	const user = (token) => {
+		axios({
+			method: "POST",
+			url: baseURL + "/user/profile",
+			headers: { Authorization: `Bearer ${token}` },
+		})
+			.then((response) => {
+				setUserData(response.data.body);
+				setNewFirstName(response.data.body.firstName);
+				setNewLastName(response.data.body.lastName);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
+
+	const newName = (firstname, lastname) => {
+		axios({
+			method: "PUT",
+			url: baseURL + "/user/profile",
+			headers: { Authorization: `Bearer ${userToken}` },
+			data: {
+				firstName: firstname,
+				lastName: lastname,
+			},
+		})
+			.then((response) => {
+				console.log(response);
+			})
+			.catch((error) => {
+				console.log(error);
+			});
+	};
 
 	useEffect(() => {
 		if (!isConnected) {
 			navigate("/login", { replace: true });
 		}
 
-		const user = (token) => {
-			axios({
-				method: "POST",
-				url: baseURL + "/user/profile",
-				headers: { Authorization: `Bearer ${token}` },
-			})
-				.then((response) => {
-					setUserData(response.data.body);
-				})
-				.catch((error) => {
-					console.log(error);
-				});
-		};
-
 		user(userToken);
-	}, [userToken, baseURL, isConnected, navigate]);
+	}, []);
 
 	if (!userData || !account.data) {
 		return null;
@@ -50,7 +90,37 @@ function Profile() {
 					<br />
 					{userData.firstName} {userData.lastName}!
 				</h1>
-				<button className="edit-button">Edit Name</button>
+				{!showEditNameForm && (
+					<button className="edit-button" onClick={toggleEditNameForm}>
+						Edit Name
+					</button>
+				)}
+				{showEditNameForm && (
+					<form className="new-name-form" onSubmit={handleSubmit}>
+						<div className="input-group">
+							<div className="input-wrapper">
+								<label className="hidden" htmlFor="firstname">
+									Firstname
+								</label>
+								<input type="text" id="firstname" onChange={(e) => setNewFirstName(e.target.value)} value={newFirstName} />
+							</div>
+							<div className="input-wrapper">
+								<label className="hidden" htmlFor="lastname">
+									Lastname
+								</label>
+								<input type="text" id="lastname" onChange={(e) => setNewLastName(e.target.value)} value={newLastName} />
+							</div>
+						</div>
+						<div className="input-group">
+							<button type="submit" className="edit-button">
+								Save
+							</button>
+							<button className="edit-button" onClick={toggleEditNameForm}>
+								Cancel
+							</button>
+						</div>
+					</form>
+				)}
 			</div>
 			<h2 className="sr-only">Accounts</h2>
 			{accountData && accountData.account.map((account, index) => <AccountCard key={account.title + "-" + index} title={account.title} amount={account.amount} description={account.description} />)}
