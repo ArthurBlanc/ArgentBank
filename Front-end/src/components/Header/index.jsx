@@ -1,15 +1,20 @@
 import { NavLink, Link } from "react-router-dom";
-import { useContext } from "react";
-import { Context } from "../../context";
 
 import logo from "../../assets/argentBankLogo.png";
 
+import { isConnectedAction, userDataAction } from "../../store/store";
+
+import { useDispatch, useSelector } from "react-redux";
+
 function Header() {
-	const { isConnected, setIsConnected, userData, setUserData } = useContext(Context);
+	const dispatch = useDispatch();
+
+	const userData = useSelector((state) => state.userData);
+	const isConnected = useSelector((state) => state.isConnected);
 
 	const signOut = () => {
-		setIsConnected(false);
-		setUserData(null);
+		dispatch(isConnectedAction(false));
+		dispatch(userDataAction(null));
 	};
 
 	return (

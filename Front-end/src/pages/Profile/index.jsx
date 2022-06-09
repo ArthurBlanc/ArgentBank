@@ -1,28 +1,35 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import { Context } from "../../context";
 
 import AccountCard from "../../components/AccountCard";
 
 import { useFetch } from "../../utils/useFetch";
+import { userDataAction } from "../../store/store";
+
+import { useDispatch, useSelector } from "react-redux";
 
 import "./styles.css";
 
 function Profile() {
-	const { userToken, baseURL, isConnected, userData, setUserData } = useContext(Context);
+	let navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	const isConnected = useSelector((state) => state.isConnected);
+	const baseURL = useSelector((state) => state.baseURL);
+	const userToken = useSelector((state) => state.userToken);
+	const userData = useSelector((state) => state.userData);
+
 	const [newFirstName, setNewFirstName] = useState(null);
 	const [newLastName, setNewLastName] = useState(null);
 	const [showEditNameForm, setShowEditNameForm] = useState(false);
-
-	let navigate = useNavigate();
 
 	const account = useFetch(window.location.origin + "/account-data.json");
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
 		newName(newFirstName, newLastName);
-		user(userToken);
+		getUser();
 		setShowEditNameForm(false);
 	};
 
@@ -34,21 +41,24 @@ function Profile() {
 		}
 	};
 
-	const user = (token) => {
-		axios({
-			method: "POST",
-			url: baseURL + "/user/profile",
-			headers: { Authorization: `Bearer ${token}` },
-		})
-			.then((response) => {
-				setUserData(response.data.body);
-				setNewFirstName(response.data.body.firstName);
-				setNewLastName(response.data.body.lastName);
+	const getUser = useCallback(() => {
+		const user = async (token) => {
+			axios({
+				method: "POST",
+				url: baseURL + "/user/profile",
+				headers: { Authorization: `Bearer ${token}` },
 			})
-			.catch((error) => {
-				console.log(error);
-			});
-	};
+				.then((response) => {
+					dispatch(userDataAction(response.data.body));
+					setNewFirstName(response.data.body.firstName);
+					setNewLastName(response.data.body.lastName);
+				})
+				.catch((error) => {
+					console.log(error);
+				});
+		};
+		user(userToken);
+	}, [dispatch, baseURL, userToken]);
 
 	const newName = (firstname, lastname) => {
 		axios({
@@ -62,6 +72,7 @@ function Profile() {
 		})
 			.then((response) => {
 				console.log(response);
+				getUser();
 			})
 			.catch((error) => {
 				console.log(error);
@@ -72,9 +83,8 @@ function Profile() {
 		if (!isConnected) {
 			navigate("/login", { replace: true });
 		}
-
-		user(userToken);
-	}, []);
+		getUser();
+	}, [isConnected, navigate, getUser]);
 
 	if (!userData || !account.data) {
 		return null;

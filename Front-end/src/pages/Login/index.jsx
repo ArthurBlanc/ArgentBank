@@ -1,19 +1,26 @@
 import axios from "axios";
-import { useState, useContext, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { Context } from "../../context";
+
+import { isConnectedAction, userTokenAction } from "../../store/store";
+
+import { useDispatch, useSelector } from "react-redux";
 
 function Login() {
-	const { setUserToken, baseURL, isConnected, setIsConnected } = useContext(Context);
+	let navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	const baseURL = useSelector((state) => state.baseURL);
+	const isConnected = useSelector((state) => state.isConnected);
+
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
-	let navigate = useNavigate();
 
 	useEffect(() => {
 		if (isConnected) {
-			navigate("/profile", { replace: true });
+			navigate("/profile");
 		}
-	}, [isConnected, setIsConnected, navigate]);
+	}, [isConnected, navigate]);
 
 	const login = (email, password) => {
 		axios
@@ -22,12 +29,12 @@ function Login() {
 				password: password,
 			})
 			.then((response) => {
-				setUserToken(response.data.body.token);
-				setIsConnected(true);
+				dispatch(userTokenAction(response.data.body.token));
+				dispatch(isConnectedAction(true));
 			})
 			.catch((error) => {
 				console.log(error);
-				setIsConnected(false);
+				dispatch(isConnectedAction(false));
 			});
 	};
 
