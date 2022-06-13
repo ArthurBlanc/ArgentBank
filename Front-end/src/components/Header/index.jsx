@@ -2,19 +2,20 @@ import { NavLink, Link } from "react-router-dom";
 
 import logo from "../../assets/argentBankLogo.png";
 
-import { isConnectedAction, userDataAction } from "../../store/store";
+import { userResetAction } from "../../store/user";
+
+import { selectIsConnected, selectUserFirstName } from "../../store/selectors";
 
 import { useDispatch, useSelector } from "react-redux";
 
 function Header() {
 	const dispatch = useDispatch();
 
-	const userData = useSelector((state) => state.userData);
-	const isConnected = useSelector((state) => state.isConnected);
+	const userFirstName = useSelector(selectUserFirstName());
+	const isConnected = useSelector(selectIsConnected());
 
 	const signOut = () => {
-		dispatch(isConnectedAction(false));
-		dispatch(userDataAction(null));
+		dispatch(userResetAction());
 	};
 
 	return (
@@ -34,8 +35,8 @@ function Header() {
 				{isConnected && (
 					<NavLink className="main-nav-item" to="/profile">
 						<i className="fa fa-user-circle"></i>
-						{!userData && "Profile"}
-						{userData && userData.firstName}
+						{!userFirstName && "Profile"}
+						{userFirstName && userFirstName}
 					</NavLink>
 				)}
 				{isConnected && (

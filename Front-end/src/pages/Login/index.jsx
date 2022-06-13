@@ -1,8 +1,10 @@
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { isConnectedAction, userTokenAction } from "../../store/store";
+import { fetchOrUpdateLogin } from "../../store/login";
+import { store } from "../../store/store";
+
+import { selectIsConnected, selectBaseURL } from "../../store/selectors";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -10,38 +12,22 @@ function Login() {
 	let navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	const baseURL = useSelector((state) => state.baseURL);
-	const isConnected = useSelector((state) => state.isConnected);
+	const baseURL = useSelector(selectBaseURL());
+	const isConnected = useSelector(selectIsConnected());
 
 	const [email, setEmail] = useState("");
 	const [password, setPassword] = useState("");
+
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+		fetchOrUpdateLogin(store, baseURL, email, password);
+	};
 
 	useEffect(() => {
 		if (isConnected) {
 			navigate("/profile");
 		}
-	}, [isConnected, navigate]);
-
-	const login = (email, password) => {
-		axios
-			.post(baseURL + "/user/login", {
-				email: email,
-				password: password,
-			})
-			.then((response) => {
-				dispatch(userTokenAction(response.data.body.token));
-				dispatch(isConnectedAction(true));
-			})
-			.catch((error) => {
-				console.log(error);
-				dispatch(isConnectedAction(false));
-			});
-	};
-
-	const handleSubmit = async (event) => {
-		event.preventDefault();
-		login(email, password);
-	};
+	}, [isConnected, dispatch, navigate]);
 
 	return (
 		<main className="main bg-dark">

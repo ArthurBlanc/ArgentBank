@@ -4,8 +4,12 @@ import { useNavigate } from "react-router-dom";
 
 import AccountCard from "../../components/AccountCard";
 
-import { useFetch } from "../../utils/useFetch";
-import { userDataAction } from "../../store/store";
+import { fetchOrUpdateAccount } from "../../store/account";
+
+import { store } from "../../store/store";
+import { userDataAction } from "../../store/user";
+
+import { selectBaseURL, selectIsConnected, selectUserToken, selectUserId, selectUserFirstName, selectUserLastName, selectUserAccountData } from "../../store/selectors";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -15,18 +19,19 @@ function Profile() {
 	let navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	const isConnected = useSelector((state) => state.isConnected);
-	const baseURL = useSelector((state) => state.baseURL);
-	const userToken = useSelector((state) => state.userToken);
-	const userData = useSelector((state) => state.userData);
+	const baseURL = useSelector(selectBaseURL());
+	const isConnected = useSelector(selectIsConnected());
+	const userToken = useSelector(selectUserToken());
+	const userId = useSelector(selectUserId());
+	const userFirstName = useSelector(selectUserFirstName());
+	const userLastName = useSelector(selectUserLastName());
+	const accountData = useSelector(selectUserAccountData(userId ? userId : null));
 
 	const [newFirstName, setNewFirstName] = useState(null);
 	const [newLastName, setNewLastName] = useState(null);
 	const [showEditNameForm, setShowEditNameForm] = useState(false);
 
-	const account = useFetch(window.location.origin + "/account-data.json");
-
-	const handleSubmit = async (event) => {
+	const handleSubmit = (event) => {
 		event.preventDefault();
 		newName(newFirstName, newLastName);
 		getUser();
@@ -42,7 +47,7 @@ function Profile() {
 	};
 
 	const getUser = useCallback(() => {
-		const user = async (token) => {
+		const user = (token) => {
 			axios({
 				method: "POST",
 				url: baseURL + "/user/profile",
@@ -80,17 +85,19 @@ function Profile() {
 	};
 
 	useEffect(() => {
+		fetchOrUpdateAccount(store);
+		getUser();
+	}, []);
+
+	useEffect(() => {
 		if (!isConnected) {
 			navigate("/login", { replace: true });
 		}
-		getUser();
-	}, [isConnected, navigate, getUser]);
+	}, [isConnected, navigate]);
 
-	if (!userData || !account.data) {
+	if (!userFirstName || !userLastName) {
 		return null;
 	}
-
-	let accountData = account.data.find((item) => item.userId === userData.id);
 
 	return (
 		<main className="main bg-dark">
@@ -98,7 +105,7 @@ function Profile() {
 				<h1>
 					Welcome back
 					<br />
-					{userData.firstName} {userData.lastName}!
+					{userFirstName && userFirstName} {userLastName && userLastName}!
 				</h1>
 				{!showEditNameForm && (
 					<button className="edit-button" onClick={toggleEditNameForm}>
