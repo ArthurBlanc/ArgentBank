@@ -13,23 +13,11 @@ const initialState = {
 
 const ISCONNECTED = "isConntected";
 const USERTOKEN = "userToken";
-const USERID = "userId";
-const USEREMAIL = "userEmail";
-const USERFIRSTNAME = "userFirstName";
-const USERLASTNAME = "userLastName";
-const USERCREATEDAT = "createdAt";
-const USERUPDATEDAT = "updatedAt";
 const USERDATA = "userData";
 const USERRESET = "userReset";
 
 export const isConnectedAction = (isConnected) => ({ type: ISCONNECTED, payload: isConnected });
 export const userTokenAction = (userToken) => ({ type: USERTOKEN, payload: userToken });
-export const userIdAction = (userId) => ({ type: USERID, payload: userId });
-export const userEmailAction = (userEmail) => ({ type: USEREMAIL, payload: userEmail });
-export const userFirstNameAction = (userFirstName) => ({ type: USERFIRSTNAME, payload: userFirstName });
-export const userLastNameAction = (userLastName) => ({ type: USERLASTNAME, payload: userLastName });
-export const userCreatedAtAction = (userCreatedAt) => ({ type: USERCREATEDAT, payload: userCreatedAt });
-export const userUpdatedAtAction = (userUpdatedAt) => ({ type: USERUPDATEDAT, payload: userUpdatedAt });
 export const userDataAction = (userData) => ({ type: USERDATA, payload: userData });
 export const userResetAction = () => ({ type: USERRESET });
 
@@ -55,7 +43,14 @@ export default function userReducer(state = initialState, action) {
 		});
 	}
 	if (action.type === USERRESET) {
-		return initialState;
+		return produce(state, (draft) => {
+			draft.id = initialState.id;
+			draft.email = initialState.email;
+			draft.firstName = initialState.firstName;
+			draft.lastName = initialState.lastName;
+			draft.createdAt = initialState.createdAt;
+			draft.updatedAt = initialState.updatedAt;
+		});
 	}
 	return state;
 }
