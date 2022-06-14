@@ -11,21 +11,21 @@ const accountFetchingAction = createAction("account/fetching");
 const accountResolvedAction = createAction("account/resolved");
 const accountRejectedAction = createAction("account/rejected");
 
-export const fetchOrUpdateAccount = async (store) => {
+export const fetchOrUpdateAccount = async (dispatch, getState) => {
 	const selectAccount = (state) => state.account;
-	const status = selectAccount(store.getState()).status;
+	const status = selectAccount(getState()).status;
 	if (status === "pending" || status === "updating") {
 		return;
 	}
 
-	store.dispatch(accountFetchingAction());
+	dispatch(accountFetchingAction());
 	await axios
 		.get(window.location.origin + "/account-data.json")
 		.then((response) => {
-			store.dispatch(accountResolvedAction(response.data));
+			dispatch(accountResolvedAction(response.data));
 		})
 		.catch((error) => {
-			store.dispatch(accountRejectedAction(error));
+			dispatch(accountRejectedAction(error));
 		});
 };
 

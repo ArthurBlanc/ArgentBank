@@ -6,7 +6,6 @@ import AccountCard from "../../components/AccountCard";
 
 import { fetchOrUpdateAccount } from "../../store/account";
 
-import store from "../../store/store";
 import { userDataAction } from "../../store/user";
 
 import { selectBaseURL, selectIsConnected, selectUserToken, selectUserId, selectUserFirstName, selectUserLastName, selectUserAccountData } from "../../store/selectors";
@@ -85,8 +84,8 @@ function Profile() {
 	};
 
 	useEffect(() => {
-		fetchOrUpdateAccount(store);
-	}, []);
+		dispatch(fetchOrUpdateAccount);
+	}, [dispatch]);
 
 	useEffect(() => {
 		getUser();

@@ -13,29 +13,31 @@ const loginFetchingAction = createAction("login/fetching");
 const loginResolvedAction = createAction("login/resolved");
 const loginRejectedAction = createAction("login/rejected");
 
-export const fetchOrUpdateLogin = async (store, baseURL, email, password) => {
-	const selectLogin = (state) => state.login;
-	const status = selectLogin(store.getState()).status;
-	if (status === "pending" || status === "updating") {
-		return;
-	}
+export const fetchOrUpdateLogin = (baseURL, email, password) => {
+	return async (dispatch, getState) => {
+		const selectLogin = (state) => state.login;
+		const status = selectLogin(getState()).status;
+		if (status === "pending" || status === "updating") {
+			return;
+		}
 
-	store.dispatch(loginFetchingAction());
-	await axios
-		.post(baseURL + "/user/login", {
-			email: email,
-			password: password,
-		})
-		.then((response) => {
-			store.dispatch(loginResolvedAction(response.data));
-			store.dispatch(userTokenAction(response.data.body.token));
-			store.dispatch(isConnectedAction(true));
-		})
-		.catch((error) => {
-			console.log(error);
-			store.dispatch(isConnectedAction(false));
-			store.dispatch(loginRejectedAction(error));
-		});
+		dispatch(loginFetchingAction());
+		await axios
+			.post(baseURL + "/user/login", {
+				email: email,
+				password: password,
+			})
+			.then((response) => {
+				dispatch(loginResolvedAction(response.data));
+				dispatch(userTokenAction(response.data.body.token));
+				dispatch(isConnectedAction(true));
+			})
+			.catch((error) => {
+				console.log(error);
+				dispatch(isConnectedAction(false));
+				dispatch(loginRejectedAction(error));
+			});
+	};
 };
 
 export default createReducer(initialState, (builder) =>
