@@ -1,5 +1,5 @@
 import axios from "axios";
-import produce from "immer";
+import { createAction, createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
 	status: "void",
@@ -7,15 +7,11 @@ const initialState = {
 	error: null,
 };
 
-const FETCHING = "account/fetching";
-const RESOLVED = "account/resolved";
-const REJECTED = "account/rejected";
+const accountFetchingAction = createAction("account/fetching");
+const accountResolvedAction = createAction("account/resolved");
+const accountRejectedAction = createAction("account/rejected");
 
-const accountFetchingAction = () => ({ type: FETCHING });
-const accountResolvedAction = (data) => ({ type: RESOLVED, payload: data });
-const accountRejectedAction = (error) => ({ type: REJECTED, payload: error });
-
-export async function fetchOrUpdateAccount(store) {
+export const fetchOrUpdateAccount = async (store) => {
 	const selectAccount = (state) => state.account;
 	const status = selectAccount(store.getState()).status;
 	if (status === "pending" || status === "updating") {
@@ -31,46 +27,41 @@ export async function fetchOrUpdateAccount(store) {
 		.catch((error) => {
 			store.dispatch(accountRejectedAction(error));
 		});
-}
+};
 
-export default function accountReducer(state = initialState, action) {
-	return produce(state, (draft) => {
-		switch (action.type) {
-			case FETCHING: {
-				if (draft.status === "void") {
-					draft.status = "pending";
-					return;
-				}
-				if (draft.status === "rejected") {
-					draft.error = null;
-					draft.status = "pending";
-					return;
-				}
-				if (draft.status === "resolved") {
-					draft.status = "updating";
-					return;
-				}
+export default createReducer(initialState, (builder) =>
+	builder
+		.addCase(accountFetchingAction, (draft) => {
+			if (draft.status === "void") {
+				draft.status = "pending";
 				return;
 			}
-			case RESOLVED: {
-				if (draft.status === "pending" || draft.status === "updating") {
-					draft.data = action.payload;
-					draft.status = "resolved";
-					return;
-				}
+			if (draft.status === "rejected") {
+				draft.error = null;
+				draft.status = "pending";
 				return;
 			}
-			case REJECTED: {
-				if (draft.status === "pending" || draft.status === "updating") {
-					draft.status = "rejected";
-					draft.error = action.payload;
-					draft.data = null;
-					return;
-				}
+			if (draft.status === "resolved") {
+				draft.status = "updating";
 				return;
 			}
-			default:
+			return;
+		})
+		.addCase(accountResolvedAction, (draft, action) => {
+			if (draft.status === "pending" || draft.status === "updating") {
+				draft.data = action.payload;
+				draft.status = "resolved";
 				return;
-		}
-	});
-}
+			}
+			return;
+		})
+		.addCase(accountRejectedAction, (draft, action) => {
+			if (draft.status === "pending" || draft.status === "updating") {
+				draft.status = "rejected";
+				draft.error = action.payload;
+				draft.data = null;
+				return;
+			}
+			return;
+		})
+);

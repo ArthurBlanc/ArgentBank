@@ -1,5 +1,5 @@
 import axios from "axios";
-import produce from "immer";
+import { createAction, createReducer } from "@reduxjs/toolkit";
 
 import { userTokenAction, isConnectedAction } from "./user";
 
@@ -9,15 +9,11 @@ const initialState = {
 	error: null,
 };
 
-const FETCHING = "login/fetching";
-const RESOLVED = "login/resolved";
-const REJECTED = "login/rejected";
+const loginFetchingAction = createAction("login/fetching");
+const loginResolvedAction = createAction("login/resolved");
+const loginRejectedAction = createAction("login/rejected");
 
-const loginFetchingAction = () => ({ type: FETCHING });
-const loginResolvedAction = (data) => ({ type: RESOLVED, payload: data });
-const loginRejectedAction = (error) => ({ type: REJECTED, payload: error });
-
-export async function fetchOrUpdateLogin(store, baseURL, email, password) {
+export const fetchOrUpdateLogin = async (store, baseURL, email, password) => {
 	const selectLogin = (state) => state.login;
 	const status = selectLogin(store.getState()).status;
 	if (status === "pending" || status === "updating") {
@@ -40,46 +36,41 @@ export async function fetchOrUpdateLogin(store, baseURL, email, password) {
 			store.dispatch(isConnectedAction(false));
 			store.dispatch(loginRejectedAction(error));
 		});
-}
+};
 
-export default function loginReducer(state = initialState, action) {
-	return produce(state, (draft) => {
-		switch (action.type) {
-			case FETCHING: {
-				if (draft.status === "void") {
-					draft.status = "pending";
-					return;
-				}
-				if (draft.status === "rejected") {
-					draft.error = null;
-					draft.status = "pending";
-					return;
-				}
-				if (draft.status === "resolved") {
-					draft.status = "updating";
-					return;
-				}
+export default createReducer(initialState, (builder) =>
+	builder
+		.addCase(loginFetchingAction, (draft) => {
+			if (draft.status === "void") {
+				draft.status = "pending";
 				return;
 			}
-			case RESOLVED: {
-				if (draft.status === "pending" || draft.status === "updating") {
-					draft.response = action.payload;
-					draft.status = "resolved";
-					return;
-				}
+			if (draft.status === "rejected") {
+				draft.error = null;
+				draft.status = "pending";
 				return;
 			}
-			case REJECTED: {
-				if (draft.status === "pending" || draft.status === "updating") {
-					draft.status = "rejected";
-					draft.error = action.payload;
-					draft.response = null;
-					return;
-				}
+			if (draft.status === "resolved") {
+				draft.status = "updating";
 				return;
 			}
-			default:
+			return;
+		})
+		.addCase(loginResolvedAction, (draft, action) => {
+			if (draft.status === "pending" || draft.status === "updating") {
+				draft.response = action.payload;
+				draft.status = "resolved";
 				return;
-		}
-	});
-}
+			}
+			return;
+		})
+		.addCase(loginRejectedAction, (draft, action) => {
+			if (draft.status === "pending" || draft.status === "updating") {
+				draft.status = "rejected";
+				draft.error = action.payload;
+				draft.response = null;
+				return;
+			}
+			return;
+		})
+);

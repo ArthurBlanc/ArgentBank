@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import { fetchOrUpdateLogin } from "../../store/login";
-import { store } from "../../store/store";
+import store from "../../store/store";
 
 import { selectIsConnected, selectBaseURL } from "../../store/selectors";
 
