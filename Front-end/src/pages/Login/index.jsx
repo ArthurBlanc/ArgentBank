@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import { fetchOrUpdateLogin } from "../../store/login";
 
-import { selectIsConnected, selectBaseURL } from "../../store/selectors";
+import { selectLoginError, selectIsConnected, selectBaseURL } from "../../store/selectors";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -12,6 +12,7 @@ function Login() {
 	const dispatch = useDispatch();
 
 	const baseURL = useSelector(selectBaseURL());
+	const loginError = useSelector(selectLoginError());
 	const isConnected = useSelector(selectIsConnected());
 
 	const [email, setEmail] = useState("");
@@ -23,10 +24,10 @@ function Login() {
 	};
 
 	useEffect(() => {
-		if (isConnected) {
+		if (isConnected && loginError === null) {
 			navigate("/profile");
 		}
-	}, [isConnected, dispatch, navigate]);
+	}, [isConnected, loginError, dispatch, navigate]);
 
 	return (
 		<main className="main bg-dark">
@@ -46,9 +47,11 @@ function Login() {
 						<input type="checkbox" id="remember-me" />
 						<label htmlFor="remember-me">Remember me</label>
 					</div>
+
 					<button type="submit" className="sign-in-button">
 						Sign In
 					</button>
+					{loginError && <div className="input-remember input-error">{loginError.response.data.message}</div>}
 				</form>
 			</section>
 		</main>

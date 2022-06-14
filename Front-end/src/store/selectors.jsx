@@ -2,12 +2,24 @@ export const selectBaseURL = () => {
 	return (state) => state.api.baseURL;
 };
 
+export const selectLoginError = () => {
+	return (state) => state.login.error;
+};
+
 export const selectIsConnected = () => {
 	return (state) => state.user.isConnected;
 };
 
 export const selectUserToken = () => {
 	return (state) => state.user.token;
+};
+
+export const selectUserStatus = () => {
+	return (state) => state.user.status;
+};
+
+export const selectUserError = () => {
+	return (state) => state.user.error;
 };
 
 export const selectUserId = () => {
@@ -34,9 +46,14 @@ export const selectUserUpdatedAt = () => {
 	return (state) => state.user.updatedAt;
 };
 
+export const selectAccountStatus = () => {
+	return (state) => state.account.status;
+};
+
+export const selectAccountError = () => {
+	return (state) => state.account.error;
+};
+
 export const selectUserAccountData = (id) => {
-	if (id === null) {
-		return (state) => state;
-	}
-	return (state) => state.account.data.find((item) => item.userId === id);
+	return (state) => (state.account.data ? state.account.data.find((item) => item.userId === id) : null);
 };

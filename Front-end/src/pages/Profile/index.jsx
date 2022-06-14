@@ -1,14 +1,25 @@
-import axios from "axios";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 import AccountCard from "../../components/AccountCard";
 
 import { fetchOrUpdateAccount } from "../../store/account";
 
-import { userDataAction } from "../../store/user";
+import { modifyUserName } from "../../store/user";
 
-import { selectBaseURL, selectIsConnected, selectUserToken, selectUserId, selectUserFirstName, selectUserLastName, selectUserAccountData } from "../../store/selectors";
+import {
+	selectBaseURL,
+	selectIsConnected,
+	selectUserToken,
+	selectUserStatus,
+	selectUserError,
+	selectUserId,
+	selectUserFirstName,
+	selectUserLastName,
+	selectAccountStatus,
+	selectAccountError,
+	selectUserAccountData,
+} from "../../store/selectors";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -21,10 +32,14 @@ function Profile() {
 	const baseURL = useSelector(selectBaseURL());
 	const isConnected = useSelector(selectIsConnected());
 	const userToken = useSelector(selectUserToken());
+	const userStatus = useSelector(selectUserStatus());
+	const userError = useSelector(selectUserError());
 	const userId = useSelector(selectUserId());
 	const userFirstName = useSelector(selectUserFirstName());
 	const userLastName = useSelector(selectUserLastName());
-	const accountData = useSelector(selectUserAccountData(userId ? userId : null));
+	const accountStatus = useSelector(selectAccountStatus());
+	const accountError = useSelector(selectAccountError());
+	const accountData = useSelector(selectUserAccountData(userId));
 
 	const [newFirstName, setNewFirstName] = useState(null);
 	const [newLastName, setNewLastName] = useState(null);
@@ -32,55 +47,12 @@ function Profile() {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
-		newName(newFirstName, newLastName);
-		getUser();
+		dispatch(modifyUserName(baseURL, userToken, newFirstName, newLastName));
 		setShowEditNameForm(false);
 	};
 
 	const toggleEditNameForm = () => {
-		if (showEditNameForm) {
-			setShowEditNameForm(false);
-		} else {
-			setShowEditNameForm(true);
-		}
-	};
-
-	const getUser = useCallback(() => {
-		const user = (token) => {
-			axios({
-				method: "POST",
-				url: baseURL + "/user/profile",
-				headers: { Authorization: `Bearer ${token}` },
-			})
-				.then((response) => {
-					dispatch(userDataAction(response.data.body));
-					setNewFirstName(response.data.body.firstName);
-					setNewLastName(response.data.body.lastName);
-				})
-				.catch((error) => {
-					console.log(error);
-				});
-		};
-		user(userToken);
-	}, [dispatch, baseURL, userToken]);
-
-	const newName = (firstname, lastname) => {
-		axios({
-			method: "PUT",
-			url: baseURL + "/user/profile",
-			headers: { Authorization: `Bearer ${userToken}` },
-			data: {
-				firstName: firstname,
-				lastName: lastname,
-			},
-		})
-			.then((response) => {
-				console.log(response);
-				getUser();
-			})
-			.catch((error) => {
-				console.log(error);
-			});
+		showEditNameForm ? setShowEditNameForm(false) : setShowEditNameForm(true);
 	};
 
 	useEffect(() => {
@@ -88,17 +60,47 @@ function Profile() {
 	}, [dispatch]);
 
 	useEffect(() => {
-		getUser();
-	}, [getUser]);
+		setNewFirstName(userFirstName);
+		setNewLastName(userLastName);
+	}, [userFirstName, userLastName]);
 
 	useEffect(() => {
 		if (!isConnected) {
-			navigate("/login", { replace: true });
+			navigate("/login");
 		}
 	}, [isConnected, navigate]);
 
-	if (!userFirstName || !userLastName) {
-		return null;
+	if (userError !== null || accountError !== null) {
+		return (
+			<main className="main bg-dark">
+				<div className="header">
+					<h1>Error... </h1>
+					<h2>
+						{userError && "User data: " + userError.response.statusText} {accountError && "Account data: " + accountError.response.statusText}
+					</h2>
+				</div>
+			</main>
+		);
+	}
+
+	if (userStatus !== "resolved" || accountStatus !== "resolved") {
+		return (
+			<main className="main bg-dark">
+				<div className="header">
+					<h1>Loading...</h1>
+				</div>
+			</main>
+		);
+	}
+
+	if (userStatus === "rejected" || accountStatus === "rejected") {
+		return (
+			<main className="main bg-dark">
+				<div className="header">
+					<h1>Your request is rejected</h1>
+				</div>
+			</main>
+		);
 	}
 
 	return (

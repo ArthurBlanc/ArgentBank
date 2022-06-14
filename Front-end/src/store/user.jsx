@@ -1,6 +1,9 @@
+import axios from "axios";
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
 const initialState = {
+	status: "void",
+	error: null,
 	isConnected: false,
 	token: null,
 	id: null,
@@ -11,13 +14,112 @@ const initialState = {
 	updatedAt: null,
 };
 
-export const isConnectedAction = createAction("isConnected");
-export const userTokenAction = createAction("userToken");
-export const userDataAction = createAction("userData");
-export const userResetAction = createAction("userReset");
+const userFetchingAction = createAction("user/fetching");
+const userResolvedAction = createAction("user/resolved");
+const userRejectedAction = createAction("user/rejected");
+
+export const isConnectedAction = createAction("user/isConnected");
+export const userTokenAction = createAction("user/token");
+export const userDataAction = createAction("user/data");
+export const userResetAction = createAction("user/reset");
+
+export const fetchOrUpdateUser = (baseURL, token) => {
+	return async (dispatch, getState) => {
+		const selectUser = (state) => state.user;
+		const status = selectUser(getState()).status;
+		if (status === "pending" || status === "updating") {
+			return;
+		}
+
+		dispatch(userFetchingAction());
+		await axios({
+			method: "POST",
+			url: baseURL + "/user/profile",
+			headers: { Authorization: `Bearer ${token}` },
+		})
+			.then((response) => {
+				dispatch(userResolvedAction(response.data));
+			})
+			.catch((error) => {
+				dispatch(userRejectedAction(error));
+			});
+	};
+};
+
+export const modifyUserName = (baseURL, token, firstname, lastname) => {
+	return async (dispatch, getState) => {
+		const selectUser = (state) => state.user;
+		const status = selectUser(getState()).status;
+		if (status === "pending" || status === "updating") {
+			return;
+		}
+
+		dispatch(userFetchingAction());
+		axios({
+			method: "PUT",
+			url: baseURL + "/user/profile",
+			headers: { Authorization: `Bearer ${token}` },
+			data: {
+				firstName: firstname,
+				lastName: lastname,
+			},
+		})
+			.then((response) => {
+				dispatch(userResolvedAction(response.data));
+			})
+			.catch((error) => {
+				dispatch(userRejectedAction(error));
+			});
+	};
+};
 
 export default createReducer(initialState, (builder) =>
 	builder
+		.addCase(userFetchingAction, (draft) => {
+			if (draft.status === "void") {
+				draft.status = "pending";
+				return;
+			}
+			if (draft.status === "rejected") {
+				draft.error = null;
+				draft.status = "pending";
+				return;
+			}
+			if (draft.status === "resolved") {
+				draft.status = "updating";
+				return;
+			}
+			return;
+		})
+		.addCase(userResolvedAction, (draft, action) => {
+			if (draft.status === "pending" || draft.status === "updating") {
+				draft.id = action.payload.body.id;
+				draft.email = action.payload.body.email;
+				draft.firstName = action.payload.body.firstName;
+				draft.lastName = action.payload.body.lastName;
+				draft.createdAt = action.payload.body.createdAt;
+				draft.updatedAt = action.payload.body.updatedAt;
+				draft.status = "resolved";
+				return;
+			}
+			return;
+		})
+		.addCase(userRejectedAction, (draft, action) => {
+			if (draft.status === "pending" || draft.status === "updating") {
+				draft.status = "rejected";
+				draft.error = action.payload;
+				draft.isConnected = initialState.isConnected;
+				draft.token = initialState.token;
+				draft.id = initialState.id;
+				draft.email = initialState.email;
+				draft.firstName = initialState.firstName;
+				draft.lastName = initialState.lastName;
+				draft.createdAt = initialState.createdAt;
+				draft.updatedAt = initialState.updatedAt;
+				return;
+			}
+			return;
+		})
 		.addCase(isConnectedAction, (draft, action) => {
 			draft.isConnected = action.payload;
 			return;
@@ -26,16 +128,9 @@ export default createReducer(initialState, (builder) =>
 			draft.token = action.payload;
 			return;
 		})
-		.addCase(userDataAction, (draft, action) => {
-			draft.id = action.payload.id;
-			draft.email = action.payload.email;
-			draft.firstName = action.payload.firstName;
-			draft.lastName = action.payload.lastName;
-			draft.createdAt = action.payload.createdAt;
-			draft.updatedAt = action.payload.updatedAt;
-			return;
-		})
 		.addCase(userResetAction, (draft) => {
+			draft.status = initialState.status;
+			draft.error = initialState.error;
 			draft.isConnected = initialState.isConnected;
 			draft.token = initialState.token;
 			draft.id = initialState.id;

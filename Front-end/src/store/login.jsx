@@ -1,7 +1,7 @@
 import axios from "axios";
 import { createAction, createReducer } from "@reduxjs/toolkit";
 
-import { userTokenAction, isConnectedAction } from "./user";
+import { userTokenAction, isConnectedAction, fetchOrUpdateUser } from "./user";
 
 const initialState = {
 	status: "void",
@@ -29,11 +29,11 @@ export const fetchOrUpdateLogin = (baseURL, email, password) => {
 			})
 			.then((response) => {
 				dispatch(loginResolvedAction(response.data));
+				dispatch(fetchOrUpdateUser(baseURL, response.data.body.token));
 				dispatch(userTokenAction(response.data.body.token));
 				dispatch(isConnectedAction(true));
 			})
 			.catch((error) => {
-				console.log(error);
 				dispatch(isConnectedAction(false));
 				dispatch(loginRejectedAction(error));
 			});
