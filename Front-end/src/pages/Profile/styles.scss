@@ -1,0 +1,21 @@
+.new-name-form {
+	width: 40%;
+	margin: auto;
+	.input-group {
+		display: flex;
+		margin: 0 auto;
+		column-gap: 0.5rem;
+		&:last-child {
+			width: 10rem;
+		}
+	}
+}
+
+.input-group {
+	.input-wrapper {
+		width: 50%;
+	}
+	.edit-button {
+		width: 5rem;
+	}
+}

@@ -26,7 +26,7 @@ import {
 
 import { useDispatch, useSelector } from "react-redux";
 
-import "./styles.css";
+import "./styles.scss";
 
 function Profile() {
 	let navigate = useNavigate();
