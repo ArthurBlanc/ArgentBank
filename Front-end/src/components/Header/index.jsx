@@ -4,7 +4,7 @@ import logo from "../../assets/argentBankLogo.png";
 
 import { userResetAction } from "../../store/user";
 
-import { selectIsConnected, selectUserFirstName } from "../../store/selectors";
+import { selectUserFirstName } from "../../store/selectors";
 
 import { useDispatch, useSelector } from "react-redux";
 
@@ -12,7 +12,6 @@ function Header() {
 	const dispatch = useDispatch();
 
 	const userFirstName = useSelector(selectUserFirstName());
-	const isConnected = useSelector(selectIsConnected());
 
 	const signOut = () => {
 		dispatch(userResetAction());
@@ -25,21 +24,21 @@ function Header() {
 				<h1 className="sr-only">Argent Bank</h1>
 			</Link>
 			<div>
-				{!isConnected && (
+				{!userFirstName && (
 					<NavLink className="main-nav-item" to="/login">
 						<i className="fa fa-user-circle"></i>
 						Sign In
 					</NavLink>
 				)}
 
-				{isConnected && (
+				{userFirstName && (
 					<NavLink className="main-nav-item" to="/profile">
 						<i className="fa fa-user-circle"></i>
 						{!userFirstName && "Profile"}
 						{userFirstName && userFirstName}
 					</NavLink>
 				)}
-				{isConnected && (
+				{userFirstName && (
 					<NavLink onClick={signOut} className="main-nav-item" to="/">
 						<i className="fa fa-sign-out"></i>
 						Sign Out

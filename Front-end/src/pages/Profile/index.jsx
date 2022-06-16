@@ -4,8 +4,11 @@ import { useNavigate } from "react-router-dom";
 import AccountCard from "../../components/AccountCard";
 
 import { fetchOrUpdateAccount } from "../../store/account";
+import { fetchOrUpdateUser } from "../../store/user";
 
 import { modifyUserName } from "../../store/user";
+
+import { getWithExpiry } from "../../utils/withExpiry";
 
 import {
 	selectBaseURL,
@@ -28,6 +31,8 @@ import "./styles.css";
 function Profile() {
 	let navigate = useNavigate();
 	const dispatch = useDispatch();
+
+	const localUserToken = getWithExpiry("userToken");
 
 	const baseURL = useSelector(selectBaseURL());
 	const isConnected = useSelector(selectIsConnected());
@@ -56,6 +61,12 @@ function Profile() {
 	};
 
 	useEffect(() => {
+		if (localUserToken && !userToken) {
+			dispatch(fetchOrUpdateUser(baseURL, localUserToken));
+		}
+	}, [localUserToken, userToken, dispatch, baseURL]);
+
+	useEffect(() => {
 		dispatch(fetchOrUpdateAccount);
 	}, [dispatch]);
 
@@ -65,10 +76,10 @@ function Profile() {
 	}, [userFirstName, userLastName]);
 
 	useEffect(() => {
-		if (!isConnected) {
+		if (!isConnected && !localUserToken) {
 			navigate("/login");
 		}
-	}, [isConnected, navigate]);
+	}, [isConnected, localUserToken, navigate]);
 
 	if (userError !== null || accountError !== null) {
 		return (

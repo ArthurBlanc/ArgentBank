@@ -139,6 +139,7 @@ export default createReducer(initialState, (builder) =>
 			draft.lastName = initialState.lastName;
 			draft.createdAt = initialState.createdAt;
 			draft.updatedAt = initialState.updatedAt;
+			localStorage.removeItem("userToken");
 			return;
 		})
 );
