@@ -39,6 +39,8 @@ export const fetchOrUpdateUser = (baseURL, token) => {
 		})
 			.then((response) => {
 				dispatch(userResolvedAction(response.data));
+				dispatch(userTokenAction(token));
+				dispatch(isConnectedAction(true));
 			})
 			.catch((error) => {
 				dispatch(userRejectedAction(error));

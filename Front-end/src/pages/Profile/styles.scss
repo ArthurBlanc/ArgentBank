@@ -5,9 +5,16 @@
 		display: flex;
 		margin: 0 auto;
 		column-gap: 0.5rem;
-		&:last-child {
+		&.input-center {
 			width: 10rem;
 		}
+	}
+}
+
+.input-new-names {
+	&.input-error {
+		margin-right: auto;
+		margin-left: auto;
 	}
 }
 
