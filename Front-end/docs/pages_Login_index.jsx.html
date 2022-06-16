@@ -1,0 +1,219 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> pages/Login/index.jsx</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Argent Bank - Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"></div><div class="category"><h2>Components</h2><h3>Components</h3><ul><li><a href="AccountCard.html">AccountCard</a></li><li><a href="Footer.html">Footer</a></li><li><a href="Header.html">Header</a></li><li><a href="HomeFeature.html">HomeFeature</a></li></ul></div><div class="category"><h2>Pages</h2><h3>Components</h3><ul><li><a href="Home.html">Home</a></li><li><a href="Login.html">Login</a></li><li><a href="Profile.html">Profile</a></li></ul></div><div class="category"><h2>Router</h2><h3>Components</h3><ul><li><a href="Router.html">Router</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>pages/Login/index.jsx</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
+import { fetchOrUpdateLogin } from "../../store/login";
+
+import { selectLoginError, selectIsConnected, selectBaseURL } from "../../store/selectors";
+
+import { getWithExpiry } from "../../utils/withExpiry";
+
+import { useDispatch, useSelector } from "react-redux";
+
+/**
+ * Render Profil page that uses a redux store to check if the user is logged in. If the user is logged
+ * in, it redirects to the profile page. If the user is not logged in, it displays the login form.
+ *
+ * @category Pages
+ * @component
+ * @returns { React.Component } A React component
+ */
+function Login() {
+	const navigate = useNavigate();
+	const dispatch = useDispatch();
+
+	const localUserToken = getWithExpiry("userToken");
+	const localUserEmail = localStorage.getItem("userEmail");
+
+	const baseURL = useSelector(selectBaseURL());
+	const loginError = useSelector(selectLoginError());
+	const isConnected = useSelector(selectIsConnected());
+
+	const [email, setEmail] = useState("");
+	const [password, setPassword] = useState("");
+	const [rememberMe, setRememberMe] = useState(false);
+
+	/**
+	 * When the user clicks the submit button, prevent the default action, then if the user has checked
+	 * the remember me box, save the user's email to local storage, otherwise remove the user's email from
+	 * local storage, then dispatch the fetchOrUpdateLogin function with the baseURL, email, and password
+	 * as arguments.
+	 */
+	const handleSubmit = async (event) => {
+		event.preventDefault();
+		rememberMe ? localStorage.setItem("userEmail", email) : localStorage.removeItem("userEmail");
+		dispatch(fetchOrUpdateLogin(baseURL, email, password));
+	};
+
+	/**
+	 * When the user clicks the checkbox, the value of the checkbox is set to the opposite of what it was
+	 * before.
+	 */
+	const handleRememberMe = () => {
+		setRememberMe(!rememberMe);
+	};
+
+	useEffect(() => {
+		/* This is checking if the user is logged in. If the user is logged in, it redirects to the profile
+		page. */
+		if (localUserToken || (isConnected &amp;&amp; loginError === null)) {
+			navigate("/profile");
+		}
+		/* This is checking if the user has checked the remember me box. If the user has checked the remember
+		me box, it sets the email input to the user's email. */
+		if (localUserEmail) {
+			setRememberMe(true);
+			setEmail(localUserEmail);
+		}
+	}, [localUserToken, isConnected, loginError, dispatch, navigate, localUserEmail, setEmail]);
+
+	return (
+		&lt;main className="main bg-dark">
+			&lt;section className="sign-in-content">
+				&lt;i className="fa fa-user-circle sign-in-icon">&lt;/i>
+				&lt;h1>Sign In&lt;/h1>
+				&lt;form onSubmit={handleSubmit}>
+					&lt;div className="input-wrapper">
+						&lt;label htmlFor="username">Username&lt;/label>
+						&lt;input type="text" id="username" value={email} onChange={(e) => setEmail(e.target.value)} />
+					&lt;/div>
+					&lt;div className="input-wrapper">
+						&lt;label htmlFor="password">Password&lt;/label>
+						&lt;input type="password" id="password" onChange={(e) => setPassword(e.target.value)} />
+					&lt;/div>
+					&lt;div className="input-remember">
+						&lt;input type="checkbox" id="remember-me" checked={rememberMe} onChange={handleRememberMe} />
+						&lt;label htmlFor="remember-me">Remember me&lt;/label>
+					&lt;/div>
+
+					&lt;button type="submit" className="sign-in-button">
+						Sign In
+					&lt;/button>
+					{loginError &amp;&amp; &lt;div className="input-remember input-error">{loginError.response.data.message}&lt;/div>}
+				&lt;/form>
+			&lt;/section>
+		&lt;/main>
+	);
+}
+
+export default Login;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>

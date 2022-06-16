@@ -8,11 +8,23 @@ import { selectUserFirstName } from "../../store/selectors";
 
 import { useDispatch, useSelector } from "react-redux";
 
+/**
+ * Render a nav element with the logo, if user is login, it show he's firstName and a Sign-out option,
+ * if user is not login, it show a link to the login page
+ *
+ * @category Components
+ * @component
+ * @returns { React.Component } A React component
+ */
 function Header() {
 	const dispatch = useDispatch();
 
 	const userFirstName = useSelector(selectUserFirstName());
 
+	/**
+	 * When the user clicks the sign out button, the userResetAction() function is called, which resets
+	 * the user state to null.
+	 */
 	const signOut = () => {
 		dispatch(userResetAction());
 	};

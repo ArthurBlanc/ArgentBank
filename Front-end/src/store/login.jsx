@@ -15,8 +15,18 @@ const loginFetchingAction = createAction("login/fetching");
 const loginResolvedAction = createAction("login/resolved");
 const loginRejectedAction = createAction("login/rejected");
 
+/**
+ * Function to check login and store some userData.
+ * @param {String} baseURL - URL of the API.
+ * @param {String} email - Email enter in the login form.
+ * @param {String} password - Password enter in the login form.
+ * @returns A function that takes dispatch and getState as arguments.
+ */
 export const fetchOrUpdateLogin = (baseURL, email, password) => {
 	return async (dispatch, getState) => {
+		/**
+		 * If the status of the login is pending or updating, then return.
+		 */
 		const selectLogin = (state) => state.login;
 		const status = selectLogin(getState()).status;
 		if (status === "pending" || status === "updating") {
@@ -24,6 +34,7 @@ export const fetchOrUpdateLogin = (baseURL, email, password) => {
 		}
 
 		dispatch(loginFetchingAction());
+		/* Making a post request to the server to check email and password and return some userData. */
 		await axios
 			.post(baseURL + "/user/login", {
 				email: email,
@@ -43,6 +54,7 @@ export const fetchOrUpdateLogin = (baseURL, email, password) => {
 	};
 };
 
+/* Create login reducer. */
 export default createReducer(initialState, (builder) =>
 	builder
 		.addCase(loginFetchingAction, (draft) => {

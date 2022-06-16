@@ -28,8 +28,16 @@ import { useDispatch, useSelector } from "react-redux";
 
 import "./styles.scss";
 
+/**
+ * Render Profil page that uses a redux store to check if the user is logged in. If the user is logged
+ * in, it display user account data. If the user is not logged in, it redirects to the login page.
+ *
+ * @category Pages
+ * @component
+ * @returns { React.Component } A React component
+ */
 function Profile() {
-	let navigate = useNavigate();
+	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
 	const localUserToken = getWithExpiry("userToken");
@@ -53,42 +61,60 @@ function Profile() {
 
 	const handleSubmit = (event) => {
 		event.preventDefault();
+		/* It's checking if the new first name and new last name are the same as the user first name and user
+		last name. If they are the same, it sets the error message to "There are no change". */
 		if (newFirstName === userFirstName && newLastName === userLastName) {
 			setEditNameFormError("There are no change");
-		} else if (newFirstName.length === 0 || newLastName.length === 0) {
+		} /* It's checking if the new first name and new last name are empty. If they are empty, it sets the
+		error message to "Inputs can't be empty". */ else if (newFirstName.length === 0 || newLastName.length === 0) {
 			setEditNameFormError("Inputs can't be empty");
-		} else if (newFirstName.length > 0 && newLastName.length > 0) {
+		} /* It's checking if the new first name and new last name are not empty. If they are not empty, it
+		dispatches the modifyUserName action and it sets the showEditNameForm state to false and the
+		editNameFormError state to an empty string. */ else if (newFirstName.length > 0 && newLastName.length > 0) {
 			dispatch(modifyUserName(baseURL, userToken, newFirstName, newLastName));
 			setShowEditNameForm(false);
 			setEditNameFormError("");
 		}
 	};
 
+	/**
+	 * If showEditNameForm is true, set showEditNameForm to false, otherwise set showEditNameForm to true.
+	 */
 	const toggleEditNameForm = () => {
 		showEditNameForm ? setShowEditNameForm(false) : setShowEditNameForm(true);
 	};
 
 	useEffect(() => {
+		/* It's checking if the localUserToken is not null and if the userToken is null. If the
+		localUserToken is not null and the userToken is null, it dispatches the fetchOrUpdateUser action. */
 		if (localUserToken && !userToken) {
 			dispatch(fetchOrUpdateUser(baseURL, localUserToken));
 		}
 	}, [localUserToken, userToken, dispatch, baseURL]);
 
 	useEffect(() => {
+		/* It's dispatching the fetchOrUpdateAccount action. */
 		dispatch(fetchOrUpdateAccount);
 	}, [dispatch]);
 
 	useEffect(() => {
+		/* It's setting the newFirstName state to the userFirstName and the newLastName state to the
+		userLastName. */
 		setNewFirstName(userFirstName);
 		setNewLastName(userLastName);
 	}, [userFirstName, userLastName]);
 
 	useEffect(() => {
+		/* It's checking if the isConnected state is false and if the localUserToken is null. If the
+		isConnected state is false and the localUserToken is null, it redirects to the login page. */
 		if (!isConnected && !localUserToken) {
 			navigate("/login");
 		}
 	}, [isConnected, localUserToken, navigate]);
 
+	/* It's checking if the userError state is not null or if the accountError state is not null. If the
+userError state is not null or the accountError state is not null, it returns a component that
+displays an error message. */
 	if (userError !== null || accountError !== null) {
 		return (
 			<main className="main bg-dark">
@@ -102,6 +128,9 @@ function Profile() {
 		);
 	}
 
+	/* It's checking if the userStatus state is not resolved or if the accountStatus state is not resolved.
+If the userStatus state is not resolved or the accountStatus state is not resolved, it returns a
+component that displays a loading message. */
 	if (userStatus !== "resolved" || accountStatus !== "resolved") {
 		return (
 			<main className="main bg-dark">
@@ -112,6 +141,9 @@ function Profile() {
 		);
 	}
 
+	/* It's checking if the userStatus state is rejected or if the accountStatus state is rejected. If the
+userStatus state is rejected or the accountStatus state is rejected, it returns a component that
+displays a message. */
 	if (userStatus === "rejected" || accountStatus === "rejected") {
 		return (
 			<main className="main bg-dark">

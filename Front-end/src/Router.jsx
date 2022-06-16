@@ -8,6 +8,13 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 
+/**
+ * Router to render the Header and the 3 pages of the application
+ *
+ * @category Router
+ * @component
+ * @returns { React.Component } A React component
+ */
 function Router() {
 	return (
 		<React.StrictMode>

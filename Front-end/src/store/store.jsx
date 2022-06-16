@@ -5,6 +5,7 @@ import loginReducer from "./login";
 import accountReducer from "./account";
 import userReducer from "./user";
 
+/* Creating a store with the reducers. */
 const store = configureStore({
 	reducer: {
 		api: apiReducer,

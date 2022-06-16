@@ -23,8 +23,17 @@ export const userTokenAction = createAction("user/token");
 export const userDataAction = createAction("user/data");
 export const userResetAction = createAction("user/reset");
 
+/**
+ * Function to check userToken and store more userData.
+ * @param {String} baseURL - URL of the API.
+ * @param {String} token - Token for user authentification.
+ * @returns A function that takes dispatch and getState as arguments.
+ */
 export const fetchOrUpdateUser = (baseURL, token) => {
 	return async (dispatch, getState) => {
+		/**
+		 * If the status of the user is pending or updating, then return.
+		 */
 		const selectUser = (state) => state.user;
 		const status = selectUser(getState()).status;
 		if (status === "pending" || status === "updating") {
@@ -32,6 +41,7 @@ export const fetchOrUpdateUser = (baseURL, token) => {
 		}
 
 		dispatch(userFetchingAction());
+		/* Making a post request to the server to get more userData. */
 		await axios({
 			method: "POST",
 			url: baseURL + "/user/profile",
@@ -48,8 +58,19 @@ export const fetchOrUpdateUser = (baseURL, token) => {
 	};
 };
 
+/**
+ * Function to check userToken and modify user firstname and lastname.
+ * @param {String} baseURL - URL of the API.
+ * @param {String} token - Token for user authentification.
+ * @param {String} firstname - New firstname of the user.
+ * @param {String} lastname - New lastname of the user.
+ * @returns A function that takes dispatch and getState as arguments.
+ */
 export const modifyUserName = (baseURL, token, firstname, lastname) => {
 	return async (dispatch, getState) => {
+		/**
+		 * If the status of the user is pending or updating, then return.
+		 */
 		const selectUser = (state) => state.user;
 		const status = selectUser(getState()).status;
 		if (status === "pending" || status === "updating") {
@@ -57,6 +78,7 @@ export const modifyUserName = (baseURL, token, firstname, lastname) => {
 		}
 
 		dispatch(userFetchingAction());
+		/* Making a put request to the server to edit firstname and lastname */
 		axios({
 			method: "PUT",
 			url: baseURL + "/user/profile",
@@ -75,6 +97,7 @@ export const modifyUserName = (baseURL, token, firstname, lastname) => {
 	};
 };
 
+/* Create user reducer. */
 export default createReducer(initialState, (builder) =>
 	builder
 		.addCase(userFetchingAction, (draft) => {

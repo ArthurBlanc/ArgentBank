@@ -10,6 +10,7 @@ import "./main.scss";
 const container = document.getElementById("root");
 const root = createRoot(container);
 
+/* Rendering the Provider component with the store and the Router component. */
 root.render(
 	<Provider store={store}>
 		<React.StrictMode>

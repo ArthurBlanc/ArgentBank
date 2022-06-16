@@ -1,0 +1,185 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title> components/Header/index.jsx</title>
+
+  <script src="https://cdn.jsdelivr.net/gh/google/code-prettify@master/loader/run_prettify.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <script src="./build/entry.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+  <![endif]-->
+  <link href="https://fonts.googleapis.com/css?family=Roboto:100,400,700|Inconsolata,700" rel="stylesheet">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.3/css/all.css" integrity="sha384-UHRtZLI+pbxtHCWp1t77Bi1L4ZtiqrqD80Kn4Z8NTSRyMA2Fd33n5dQ8lWUE00s/" crossorigin="anonymous">
+  <link type="text/css" rel="stylesheet" href="https://jmblog.github.io/color-themes-for-google-code-prettify/themes/tomorrow-night.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/app.min.css">
+  <link type="text/css" rel="stylesheet" href="styles/iframe.css">
+  <link type="text/css" rel="stylesheet" href="">
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+  
+</head>
+
+
+
+<body class="layout small-header">
+    <div id="stickyNavbarOverlay"></div>
+    
+
+<div class="top-nav">
+    <div class="inner">
+        <a id="hamburger" role="button" class="navbar-burger" aria-label="menu" aria-expanded="false">
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+            <span aria-hidden="true"></span>
+        </a>
+        <div class="logo">
+            
+             
+                <a href="index.html">
+                    <h1 class="navbar-item">Argent Bank - Documentation</h1>
+                </a>
+            
+        </div>
+        <div class="menu">
+            
+            <div class="navigation">
+                <a
+                    href="index.html"
+                    class="link"
+                >
+                    Documentation
+                </a>
+                
+                
+                
+            </div>
+        </div>
+    </div>
+</div>
+    <div id="main">
+        <div
+            class="sidebar "
+            id="sidebarNav"
+        >
+            
+            <nav>
+                
+                    <h2><a href="index.html">Documentation</a></h2><div class="category"></div><div class="category"><h2>Components</h2><h3>Components</h3><ul><li><a href="AccountCard.html">AccountCard</a></li><li><a href="Footer.html">Footer</a></li><li><a href="Header.html">Header</a></li><li><a href="HomeFeature.html">HomeFeature</a></li></ul></div><div class="category"><h2>Pages</h2><h3>Components</h3><ul><li><a href="Home.html">Home</a></li><li><a href="Login.html">Login</a></li><li><a href="Profile.html">Profile</a></li></ul></div><div class="category"><h2>Router</h2><h3>Components</h3><ul><li><a href="Router.html">Router</a></li></ul></div>
+                
+            </nav>
+        </div>
+        <div class="core" id="main-content-wrapper">
+            <div class="content">
+                <header class="page-title">
+                    <p>Source</p>
+                    <h1>components/Header/index.jsx</h1>
+                </header>
+                
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { NavLink, Link } from "react-router-dom";
+
+import logo from "../../assets/argentBankLogo.png";
+
+import { userResetAction } from "../../store/user";
+
+import { selectUserFirstName } from "../../store/selectors";
+
+import { useDispatch, useSelector } from "react-redux";
+
+/**
+ * Render a nav element with the logo, if user is login, it show he's firstName and a Sign-out option,
+ * if user is not login, it show a link to the login page
+ *
+ * @category Components
+ * @component
+ * @returns { React.Component } A React component
+ */
+function Header() {
+	const dispatch = useDispatch();
+
+	const userFirstName = useSelector(selectUserFirstName());
+
+	/**
+	 * When the user clicks the sign out button, the userResetAction() function is called, which resets
+	 * the user state to null.
+	 */
+	const signOut = () => {
+		dispatch(userResetAction());
+	};
+
+	return (
+		&lt;nav className="main-nav">
+			&lt;Link className="main-nav-logo" to="/">
+				&lt;img className="main-nav-logo-image" src={logo} alt="Argent Bank Logo" />
+				&lt;h1 className="sr-only">Argent Bank&lt;/h1>
+			&lt;/Link>
+			&lt;div>
+				{!userFirstName &amp;&amp; (
+					&lt;NavLink className="main-nav-item" to="/login">
+						&lt;i className="fa fa-user-circle">&lt;/i>
+						Sign In
+					&lt;/NavLink>
+				)}
+
+				{userFirstName &amp;&amp; (
+					&lt;NavLink className="main-nav-item" to="/profile">
+						&lt;i className="fa fa-user-circle">&lt;/i>
+						{!userFirstName &amp;&amp; "Profile"}
+						{userFirstName &amp;&amp; userFirstName}
+					&lt;/NavLink>
+				)}
+				{userFirstName &amp;&amp; (
+					&lt;NavLink onClick={signOut} className="main-nav-item" to="/">
+						&lt;i className="fa fa-sign-out">&lt;/i>
+						Sign Out
+					&lt;/NavLink>
+				)}
+			&lt;/div>
+		&lt;/nav>
+	);
+}
+
+export default Header;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+            </div>
+            
+            <footer class="footer">
+                <div class="content has-text-centered">
+                    <p>Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.6.10</a></p>
+                    <p class="sidebar-created-by">
+                        <a href="https://github.com/SoftwareBrothers/better-docs" target="_blank">BetterDocs theme</a> provided with <i class="fas fa-heart"></i> by
+                        <a href="http://softwarebrothers.co" target="_blank">SoftwareBrothers - JavaScript Development Agency</a>
+                    </p>
+                </div>
+            </footer>
+            
+        </div>
+        <div id="side-nav" class="side-nav">
+        </div>
+    </div>
+<script src="scripts/app.min.js"></script>
+<script>PR.prettyPrint();</script>
+<script src="scripts/linenumber.js"> </script>
+
+
+</body>
+</html>
