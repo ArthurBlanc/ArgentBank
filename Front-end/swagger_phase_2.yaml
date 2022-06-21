@@ -1,0 +1,310 @@
+swagger: "2.0"
+info:
+    title: Argent Bank Transaction API
+    description: API model proposal for user transactions
+    version: "2.0.0"
+    termsOfService: "http://swagger.io/terms/"
+host: localhost:3001
+basePath: /api/v2
+schemes:
+    - http
+paths:
+    /user/transactions:
+        get:
+            security:
+                - Bearer: []
+            tags:
+                - Transaction module
+            summary: Transactions Current Month API
+            description: API for fetching current month transactions
+            parameters:
+                - in: header
+                  name: Authorization
+                  description: Attach Bearer JWT token
+                  required: true
+                  type: string
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: User transactions retrieved successfully
+                    schema:
+                        $ref: "#/definitions/allTransactionsResponse"
+                "400":
+                    description: Invalid Fields
+                "401":
+                    description: Unauthorized
+                "404":
+                    description: Transactions not found
+                "500":
+                    description: Internal Server Error
+    /user/transaction:
+        post:
+            security:
+                - Bearer: []
+            tags:
+                - Transaction module
+            summary: Transaction Add API
+            description: API for adding a new transaction
+            parameters:
+                - in: header
+                  name: Authorization
+                  description: Attach Bearer JWT token
+                  required: true
+                  type: string
+                - in: body
+                  name: body
+                  description: Transaction info needed to create a new transaction
+                  required: true
+                  schema:
+                      $ref: "#/definitions/addTransaction"
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: Transaction added successfully
+                    schema:
+                        $ref: "#/definitions/ApiTransactionResponse"
+                "400":
+                    description: Invalid Fields
+                "401":
+                    description: Unauthorized
+                "500":
+                    description: Internal Server Error
+    /user/transaction/{idTransaction}:
+        get:
+            security:
+                - Bearer: []
+            tags:
+                - Transaction module
+            summary: Transaction Show API
+            description: API for showing a transaction
+            parameters:
+                - in: header
+                  name: Authorization
+                  description: Attach Bearer JWT token
+                  required: true
+                  type: string
+                - in: path
+                  name: idTransaction
+                  description: Id of the transaction
+                  required: true
+                  type: string
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: Transaction retrieved successfully
+                    schema:
+                        $ref: "#/definitions/ApiTransactionResponse"
+                "400":
+                    description: Invalid Fields
+                "401":
+                    description: Unauthorized
+                "404":
+                    description: Transaction not found
+                "500":
+                    description: Internal Server Error
+        put:
+            security:
+                - Bearer: []
+            tags:
+                - Transaction module
+            summary: Transaction Edit API
+            description: API for updating a transaction
+            parameters:
+                - in: header
+                  name: Authorization
+                  description: Attach Bearer JWT token
+                  required: true
+                  type: string
+                - in: path
+                  name: idTransaction
+                  description: Id of the transaction that needs to be edited
+                  required: true
+                  type: string
+                - in: body
+                  name: body
+                  description: Edit transaction
+                  required: true
+                  schema:
+                      $ref: "#/definitions/editTransaction"
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: Transaction edited successfully
+                    schema:
+                        $ref: "#/definitions/ApiTransactionResponse"
+                "400":
+                    description: Invalid Fields
+                "401":
+                    description: Unauthorized
+                "404":
+                    description: Transaction not found
+                "500":
+                    description: Internal Server Error
+        delete:
+            security:
+                - Bearer: []
+            tags:
+                - Transaction module
+            summary: Transaction Delete API
+            description: API for deleting a transaction
+            parameters:
+                - in: header
+                  name: Authorization
+                  description: Attach Bearer JWT token
+                  required: true
+                  type: string
+                - in: path
+                  name: idTransaction
+                  description: Id of the transaction that needs to be deleted
+                  required: true
+                  type: "string"
+            produces:
+                - application/json
+            responses:
+                "200":
+                    description: Transaction deleted successfully
+                "400":
+                    description: Invalid Fields
+                "401":
+                    description: Unauthorized
+                "404":
+                    description: Transaction not found
+                "500":
+                    description: Internal Server Error
+securityDefinitions:
+    Bearer:
+        type: apiKey
+        name: Authorization
+        in: header
+definitions:
+    allTransactionsResponse:
+        properties:
+            status:
+                type: integer
+            message:
+                type: string
+            body:
+                type: object
+                properties:
+                    transaction_0:
+                        type: object
+                        description: First transaction
+                        properties:
+                            id:
+                                type: string
+                                description: Id of the first transaction
+                            date:
+                                type: string
+                                description: Date of the first transaction
+                            amount:
+                                type: number
+                                description: Amount of the first transaction
+                            description:
+                                type: string
+                                description: Description of the first transaction
+                            category:
+                                type: string
+                                description: Category of the first transaction
+                            notes:
+                                type: string
+                                description: Notes of the first transaction
+                    transaction_1:
+                        type: object
+                        description: Second transaction
+                        properties:
+                            id:
+                                type: string
+                                description: Id of the second transaction
+                            date:
+                                type: string
+                                description: Date of the second transaction
+                            amount:
+                                type: number
+                                description: Amount of the second transaction
+                            description:
+                                type: string
+                                description: Description of the second transaction
+                            category:
+                                type: string
+                                description: Category of the second transaction
+                            notes:
+                                type: string
+                                description: Notes of the second transaction
+                    transaction_2:
+                        type: object
+                        description: Third transaction
+                        properties:
+                            id:
+                                type: string
+                                description: Id of the third transaction
+                            date:
+                                type: string
+                                description: Date of the third transaction
+                            amount:
+                                type: number
+                                description: Amount of the third transaction
+                            description:
+                                type: string
+                                description: Description of the third transaction
+                            category:
+                                type: string
+                                description: Category of the third transaction
+                            notes:
+                                type: string
+                                description: Notes of the third transaction
+    ApiTransactionResponse:
+        properties:
+            status:
+                type: integer
+            message:
+                type: string
+            body:
+                type: object
+                properties:
+                    id:
+                        type: string
+                        description: Id of the transaction
+                    date:
+                        type: string
+                        description: Date of the transaction
+                    amount:
+                        type: number
+                        description: Amount of the transaction
+                    description:
+                        type: string
+                        description: Description of the transaction
+                    category:
+                        type: string
+                        description: Category of the transaction
+                    notes:
+                        type: string
+                        description: Notes of the transaction
+    addTransaction:
+        properties:
+            accountId:
+                type: string
+                description: AccountId containing the new transaction
+            amount:
+                type: number
+                description: Amount of the new transaction
+            description:
+                type: string
+                description: Description of the new transaction
+            category:
+                type: string
+                description: Category of the new transaction
+            notes:
+                type: string
+                description: Notes of the new transaction
+    editTransaction:
+        properties:
+            category:
+                type: string
+                description: New category of this transaction
+            notes:
+                type: string
+                description: New notes of this transaction
