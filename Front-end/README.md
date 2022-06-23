@@ -1,3 +1,32 @@
+# P13
+
+![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)
+[![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://github.com/ArthurBlanc)
+
+## Installation
+Clone the repository :
+- `git clone https://github.com/ArthurBlanc/ArthurBlanc_13_30052022`
+### Prérequis
+
+- [Git](https://git-scm.com)
+- [Node](https://nodejs.org/en/) for npm commands or [Yarn](https://yarnpkg.com/) for yarn commands
+
+### Installation et lancement du Front-end
+
+1. Allez dans le dossier "Front-end" :
+
+2. Installer toutes les dépendances pour Front-end :
+- `npm install` ou `yarn`
+
+3. Lancer le Front-end sur le port 3000 (port par défaut) :
+- `npm start` ou `yarn start`
+
+## Auteur
+
+**Arthur Blanc** : [**GitHub**](https://github.com/ArthurBlanc/) - [**Portfolio**](https://abcoding.fr/)
+
+---
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).

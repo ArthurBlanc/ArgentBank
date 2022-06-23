@@ -20,7 +20,6 @@ const userRejectedAction = createAction("user/rejected");
 
 export const isConnectedAction = createAction("user/isConnected");
 export const userTokenAction = createAction("user/token");
-export const userDataAction = createAction("user/data");
 export const userResetAction = createAction("user/reset");
 
 /**

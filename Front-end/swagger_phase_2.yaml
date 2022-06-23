@@ -2,8 +2,8 @@ swagger: "2.0"
 info:
     title: Argent Bank Transaction API
     description: API model proposal for user transactions
-    version: "2.0.0"
-    termsOfService: "http://swagger.io/terms/"
+    version: 2.0.0
+    termsOfService: http://swagger.io/terms/
 host: localhost:3001
 basePath: /api/v2
 schemes:
@@ -161,7 +161,7 @@ paths:
                   name: idTransaction
                   description: Id of the transaction that needs to be deleted
                   required: true
-                  type: "string"
+                  type: string
             produces:
                 - application/json
             responses:
