@@ -1,12 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
 import AccountCard from "../../components/AccountCard";
+import EditNameForm from "../../components/EditNameForm";
 
 import { fetchOrUpdateAccount } from "../../store/account";
 import { fetchOrUpdateUser } from "../../store/user";
-
-import { modifyUserName } from "../../store/user";
 
 import { getWithExpiry } from "../../utils/withExpiry";
 
@@ -25,8 +24,6 @@ import {
 } from "../../store/selectors";
 
 import { useDispatch, useSelector } from "react-redux";
-
-import "./styles.scss";
 
 /**
  * Render Profil page that uses a redux store to check if the user is logged in. If the user is logged
@@ -54,36 +51,6 @@ function Profile() {
 	const accountError = useSelector(selectAccountError());
 	const accountData = useSelector(selectUserAccountData(userId));
 
-	const [newFirstName, setNewFirstName] = useState(null);
-	const [newLastName, setNewLastName] = useState(null);
-	const [showEditNameForm, setShowEditNameForm] = useState(false);
-	const [editNameFormError, setEditNameFormError] = useState("");
-
-	const handleSubmit = (event) => {
-		event.preventDefault();
-		/* It's checking if the new first name and new last name are the same as the user first name and user
-		last name. If they are the same, it sets the error message to "There are no change". */
-		if (newFirstName === userFirstName && newLastName === userLastName) {
-			setEditNameFormError("There are no change");
-		} /* It's checking if the new first name and new last name are empty. If they are empty, it sets the
-		error message to "Inputs can't be empty". */ else if (newFirstName.length === 0 || newLastName.length === 0) {
-			setEditNameFormError("Inputs can't be empty");
-		} /* It's checking if the new first name and new last name are not empty. If they are not empty, it
-		dispatches the modifyUserName action and it sets the showEditNameForm state to false and the
-		editNameFormError state to an empty string. */ else if (newFirstName.length > 0 && newLastName.length > 0) {
-			dispatch(modifyUserName(baseURL, userToken, newFirstName, newLastName));
-			setShowEditNameForm(false);
-			setEditNameFormError("");
-		}
-	};
-
-	/**
-	 * If showEditNameForm is true, set showEditNameForm to false, otherwise set showEditNameForm to true.
-	 */
-	const toggleEditNameForm = () => {
-		showEditNameForm ? setShowEditNameForm(false) : setShowEditNameForm(true);
-	};
-
 	useEffect(() => {
 		/* It's checking if the localUserToken is not null and if the userToken is null. If the
 		localUserToken is not null and the userToken is null, it dispatches the fetchOrUpdateUser action. */
@@ -96,13 +63,6 @@ function Profile() {
 		/* It's dispatching the fetchOrUpdateAccount action. */
 		dispatch(fetchOrUpdateAccount);
 	}, [dispatch]);
-
-	useEffect(() => {
-		/* It's setting the newFirstName state to the userFirstName and the newLastName state to the
-		userLastName. */
-		setNewFirstName(userFirstName);
-		setNewLastName(userLastName);
-	}, [userFirstName, userLastName]);
 
 	useEffect(() => {
 		/* It's checking if the isConnected state is false and if the localUserToken is null. If the
@@ -162,38 +122,7 @@ displays a message. */
 					<br />
 					{userFirstName && userFirstName} {userLastName && userLastName}!
 				</h1>
-				{!showEditNameForm && (
-					<button className="edit-button" onClick={toggleEditNameForm}>
-						Edit Name
-					</button>
-				)}
-				{showEditNameForm && (
-					<form className="new-name-form" onSubmit={handleSubmit}>
-						<div className="input-group">
-							<div className="input-wrapper">
-								<label className="hidden" htmlFor="firstname">
-									Firstname
-								</label>
-								<input type="text" id="firstname" onChange={(e) => setNewFirstName(e.target.value)} value={newFirstName} />
-							</div>
-							<div className="input-wrapper">
-								<label className="hidden" htmlFor="lastname">
-									Lastname
-								</label>
-								<input type="text" id="lastname" onChange={(e) => setNewLastName(e.target.value)} value={newLastName} />
-							</div>
-						</div>
-						<div className="input-group input-center">
-							<button type="submit" className="edit-button">
-								Save
-							</button>
-							<button className="edit-button" onClick={toggleEditNameForm}>
-								Cancel
-							</button>
-						</div>
-						<div className="input-group input-center">{editNameFormError && <div className="input-new-names input-error">{editNameFormError}</div>}</div>
-					</form>
-				)}
+				<EditNameForm />
 			</div>
 			<h2 className="sr-only">Accounts</h2>
 			{accountData && accountData.account.map((account, index) => <AccountCard key={account.title + "-" + index} title={account.title} amount={account.amount} description={account.description} />)}
