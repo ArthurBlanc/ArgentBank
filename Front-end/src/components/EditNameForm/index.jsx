@@ -9,10 +9,9 @@ import { useDispatch, useSelector } from "react-redux";
 import "./styles.scss";
 
 /**
- * Render Profil page that uses a redux store to check if the user is logged in. If the user is logged
- * in, it display user account data. If the user is not logged in, it redirects to the login page.
+ * Render a form used to edit the user firstName and user lastName.
  *
- * @category Pages
+ * @category Components
  * @component
  * @returns { React.Component } A React component
  */
