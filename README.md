@@ -15,7 +15,7 @@
 >
 ### Situation (fictive) du projet :
 
-Développeur Front-end danse une agence spécialisée dans le développement d’applications web.
+Développeur Front-end dans une agence spécialisée dans le développement d’applications web.
 L’agence à un nouveau projet avec une nouvelle banque qui a besoin d'aide pour mettre en place son application. Le projet se décompose en deux phases :
 
 - Phase 1 : Authentification des utilisateurs - Création d'une application web permettant aux clients de se connecter et de gérer leurs comptes et leur profil.
