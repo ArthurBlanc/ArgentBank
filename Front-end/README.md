@@ -1,99 +1,109 @@
-# P13
+![ArgentBank](/Front-end/src/assets/argentBankLogo.png)
 
+# ArgentBank 🏦💵
+
+![forthebadge](https://forthebadge.com/images/badges/uses-html.svg)
+![forthebadge](https://forthebadge.com/images/badges/uses-css.svg)
 ![forthebadge](https://forthebadge.com/images/badges/uses-js.svg)
 [![forthebadge](https://forthebadge.com/images/badges/uses-git.svg)](https://github.com/ArthurBlanc)
+[![React](https://img.shields.io/badge/react-20232a?style=for-the-badge&logo=react&logocolor=61dafb)](https://reactjs.org/)
 
-## Installation
-Clone the repository :
-- `git clone https://github.com/ArthurBlanc/ArthurBlanc_13_30052022`
-### Prérequis
+<a href="#installation-fr-">README en Français</a> - <a href="#en-installation">English README</a>
 
-- [Git](https://git-scm.com)
-- [Node](https://nodejs.org/en/) for npm commands or [Yarn](https://yarnpkg.com/) for yarn commands
+## Installation FR :
 
-### Installation et lancement du Front-end
+### Procédure d'installation :
+
+Cloner le repository:
+
+-   `https://github.com/ArthurBlanc/ArgentBank`
+
+### Installation et lancement du Back-end :
+
+1. Allez dans le dossier "Back-end" :
+
+2. Installer toutes les dépendances pour le Back-end :
+
+-   `npm install` ou `yarn`
+
+3. Lancer le back-end sur le port 3001 (port par défaut) :
+
+-   `npm run dev` ou `yarn run dev`
+
+### Installation et lancement du Front-end :
 
 1. Allez dans le dossier "Front-end" :
 
 2. Installer toutes les dépendances pour Front-end :
-- `npm install` ou `yarn`
+
+-   `npm install` ou `yarn`
 
 3. Lancer le Front-end sur le port 3000 (port par défaut) :
-- `npm start` ou `yarn start`
 
-## Auteur
+-   `npm start` ou `yarn start`
 
-**Arthur Blanc** : [**GitHub**](https://github.com/ArthurBlanc/) - [**Portfolio**](https://abcoding.fr/)
+## Développé avec :
+
+-   [Visual Studio Code](https://code.visualstudio.com/) - Éditeur de texte
+-   [Sass](https://sass-lang.com/) - Préprocesseur CSS
+-   [React 18](https://fr.reactjs.org/) - Bibliothèque JavaScript libre développée par Facebook
+-   [Create React App](https://create-react-app.dev/) - Boîte à outils créée par Facebook, qui est la référence pour initier un projet React
+-   [React Router V6](https://reactrouter.com/) - Bibliothèque de routage pour React
+-   [Prop-types](https://www.npmjs.com/package/prop-types) - Un package utilisé pour documenter les types de propriétés prévus transmises aux composants React
+-   [Redux](https://redux.js.org/) - Bibliothèque JS de gestion d'état pour applications web
+-   [JSDoc](https://jsdoc.app/) - Générateur de documentation pour JavaScript
+-   [GitHub](https://github.com/) - Outil de gestion de versions
+
+## Auteur :
+
+**Arthur Blanc** : [**GitHub**](https://github.com/ArthurBlanc/) - [**Portfolio**](https://abcoding.fr/portfolio)
 
 ---
 
-# Getting Started with Create React App
+## EN Installation:
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+### Installation process:
 
-## Available Scripts
+Clone the repository :
 
-In the project directory, you can run:
+-   `git clone https://github.com/ArthurBlanc/ArgentBank`
 
-### `npm start`
+### Installing and launching Back-end:
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Go in "Back-end" folder :
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. Install all dependencies for Back-end:
 
-### `npm test`
+-   `npm install` or `yarn`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+3. Launch back-end on port 3001 (default port):
 
-### `npm run build`
+-   `npm run dev` or `yarn run dev`
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+### Installing and launching Front-end:
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+1. Go in "Front-end" folder :
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+2. Install all dependencies for Front-end:
 
-### `npm run eject`
+-   `npm install` or `yarn`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+3. Launch front-end on port 3000 (default port):
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+-   `npm start` or `yarn start`
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+## Built With:
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+-   [Visual Studio Code](https://code.visualstudio.com/) - Text editor
+-   [Sass](https://sass-lang.com/) - CSS preprocessor
+-   [React 18](https://reactjs.org/) - Free and open-source JavaScript library developed by Facebook
+-   [Create React App](https://create-react-app.dev/) - Toolkit created by Facebook, which is the reference for initiating a React project
+-   [React Router V6](https://reactrouter.com/) - Routing library for React
+-   [Prop-types](https://www.npmjs.com/package/prop-types) - A package used to document the intended types of properties passed to React components
+-   [Redux](https://redux.js.org/) - JS library for state management in web applications
+-   [JSDoc](https://jsdoc.app/) - Documentation generator for JavaScript
+-   [GitHub](https://github.com/) - Version control tool
 
-## Learn More
+## Author:
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+**Arthur Blanc**: [**GitHub**](https://github.com/ArthurBlanc/) - [**Portfolio**](https://abcoding.fr/portfolio)
